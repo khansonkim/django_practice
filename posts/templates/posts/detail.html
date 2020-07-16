@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Keestagram</title>
+    </head>
+    <body>
+        <h1>Post Detail</h1>
+        
+        {% if post.image %}
+            <div>
+                <img src="{{ post.image.url}}"></img>
+            </div>
+        {% endif %}
+        
+        {% if post %}
+           <h2>작성자</h2>
+           <p>{{post.user.get_username}}</p>
+           <h2>본문</h2>
+           <p>{{post.body}}</p>
+           <h2>게시일</h2>
+           <p>{{post.created_at}}</p>
+           
+        {% else %}
+            <p>No posts.</p>
+        {% endif %}
+        
+        <div>
+            좋아요 수: {{post.liked_users.count}}
+        </div>
+        
+        {% if user.is_authenticated %}
+            {% if user in post.liked_users.all %}
+                <form action="{% url 'posts:like' post.id %}" method="POST">
+                    {% csrf_token%}
+                    <button type="submit" class="btn btn-primary">Like</button>
+                </form>
+            {% else %}
+                <form action="{% url 'posts:like' post.id %}" method="POST">
+                    {% csrf_token%}
+                    <button type="submit" class="btn btn-primary">Like</button>
+                </form>
+            {% endif%}
+        {% endif %}
+                
+        
+        <a href="{% url 'posts:index' %}">목록</a>
+        {% if user == post.user %}
+            <a href="{% url 'posts:edit' post.id %}">수정하기</a>
+            <a href="{% url 'posts:delete' post.id %}">삭제하기</a>
+        {% endif%}
+        
+    </body>
+</html>
